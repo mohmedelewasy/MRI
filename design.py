@@ -207,7 +207,11 @@ class MainApp(QMainWindow, MainUI):
     def examine(self):
         now = DateTime()
 
-        if self.axial_images_location == '[]'or self.coronal_images_location == '[]'or self.sagittal_images_location == '[]':
+        try:
+            if self.axial_images_location == '[]'or self.coronal_images_location == '[]'or self.sagittal_images_location == '[]':
+                QMessageBox.warning(self, "Error!", "can\'t load images!")
+                return
+        except AttributeError:
             QMessageBox.warning(self, "Error!", "can\'t load images!")
             return
 
@@ -315,7 +319,8 @@ class MainApp(QMainWindow, MainUI):
         loc = str(loc[0])[:]
         if loc == '': return
         os.mkdir(loc)
-        
+
+        workbook = xls.Workbook(os.path.join(loc,'data.xlsx'))
         worksheet = workbook.add_worksheet()
         rows = self.db.get_all_data()
         worksheet.write(0, 0, 'ID')
